@@ -1,7 +1,9 @@
-//: Minimum Coin Change Problem Playground
-//: Compare Greedy Algorithm and Dynamic Programming Algorithm in Swift
-//:
-//: Jacopo Mangiavacchi
+//
+//  Minimum Coin Change Problem Playground
+//  Compare Greedy Algorithm and Dynamic Programming Algorithm in Swift
+//
+//  Created by Jacopo Mangiavacchi on 04/03/17.
+//
 
 import Foundation
 
