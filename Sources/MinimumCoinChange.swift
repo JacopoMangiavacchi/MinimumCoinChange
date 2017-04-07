@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum MinimumCoinChangeError: Error {
+    case noRestPossibleForTheGivenValue
+}
+
 public struct MinimumCoinChange {
     private let sortedCoinSet: [Int]
     private var cache: [Int : [Int]]
@@ -17,29 +21,33 @@ public struct MinimumCoinChange {
     }
 
     //Greedy Algorithm
-    public func changeGreedy(_ value: Int) -> [Int] {
+    public func changeGreedy(_ value: Int) throws -> [Int] {
+        guard value > 0 else { return [] }
+
         var change:  [Int] = []
         var newValue = value
-        
+
         for coin in sortedCoinSet {
             while newValue - coin >= 0 {
                 change.append(coin)
                 newValue -= coin
             }
 
-            if newValue  == 0 {
+            if newValue == 0 {
                 break
             }
         }
         
+        if newValue > 0 { 
+            throw MinimumCoinChangeError.noRestPossibleForTheGivenValue 
+        } 
+
         return change
     }
 
     //Dynamic Programming Algorithm
-    public mutating func changeDynamic(_ value: Int) -> [Int] {
-        if value <= 0 {
-            return []
-        }
+    public mutating func changeDynamic(_ value: Int, shouldThrow: Bool = true) throws -> [Int] {
+        guard value > 0 else { return [] }
         
         if let cached = cache[value] {
             return cached
@@ -52,11 +60,11 @@ public struct MinimumCoinChange {
         for coin in sortedCoinSet {
             if value - coin >= 0 {
                 var potentialChange: [Int] = []
-                 potentialChange.append(coin)
+                potentialChange.append(coin)
                 let newPotentialValue = value - coin
 
                 if value  > 0 {
-                    potentialChange.append(contentsOf: changeDynamic(newPotentialValue))
+                    potentialChange.append(contentsOf: try changeDynamic(newPotentialValue, shouldThrow: false))
                 }
 
                 //print("value: \(value) coin: \(coin) potentialChange: \(potentialChange)")
@@ -69,6 +77,10 @@ public struct MinimumCoinChange {
             change = sortedPotentialChangeArray[0]
         }
         
+        if shouldThrow && change.reduce(0, +) != value { 
+            throw MinimumCoinChangeError.noRestPossibleForTheGivenValue 
+        } 
+
         cache[value] = change
         return change
     }
