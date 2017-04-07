@@ -12,7 +12,7 @@ public enum MinimumCoinChangeError: Error {
 }
 
 public struct MinimumCoinChange {
-    private let sortedCoinSet: [Int]
+    internal let sortedCoinSet: [Int]
     
     public init(coinSet: [Int]) {
         self.sortedCoinSet = coinSet.sorted(by: { $0 > $1} )
@@ -62,15 +62,8 @@ public struct MinimumCoinChange {
             
             for coin in sortedCoinSet {
                 if value - coin >= 0 {
-                    var potentialChange: [Int] = []
-                    potentialChange.append(coin)
-                    let newPotentialValue = value - coin
-
-                    if value  > 0 {
-                        potentialChange.append(contentsOf: _changeDynamic(newPotentialValue))
-                    }
-
-                    //print("value: \(value) coin: \(coin) potentialChange: \(potentialChange)")
+                    var potentialChange: [Int] = [coin]
+                    potentialChange.append(contentsOf: _changeDynamic(value - coin))
                     potentialChangeArray.append(potentialChange)
                 }
             }
