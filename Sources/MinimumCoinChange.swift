@@ -74,12 +74,9 @@ public struct MinimumCoinChange {
             if potentialChangeArray.count > 0 {
                 let sortedPotentialChangeArray = potentialChangeArray.sorted(by: { $0.count < $1.count })
                 change = sortedPotentialChangeArray[0]
+                cache[value] = change
             }
             
-            if change.reduce(0, +) == value { 
-                cache[value] = change
-            } 
-
             return change
         }
 
